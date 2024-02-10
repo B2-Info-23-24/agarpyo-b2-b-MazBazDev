@@ -11,7 +11,7 @@ class Party:
     def __init__(self, level, device):
         pygame.init()
 
-        self.screen = pygame.display.set_mode((720, 720))
+        self.screen = pygame.display.set_mode((1280, 720))
         self.clock = pygame.time.Clock()
 
         self.running = True
@@ -29,6 +29,7 @@ class Party:
             pygame.Vector2(self.screen.get_width() / 2, self.screen.get_height() / 2),
             100
         )
+
         self.traps = []
         self.foods = []
 
@@ -91,13 +92,11 @@ class Party:
             self.player.position.y = 0
 
     def drawItems(self):
-        self.player.draw(pygame, self.screen)
+        all_items = self.foods + self.traps + [self.player]
+        sorted_items = sorted(all_items, key=lambda item: item.size)
 
-        for trap in self.traps:
-            trap.draw(pygame, self.screen)
-
-        for food in self.foods:
-            food.draw(pygame, self.screen)
+        for item in sorted_items:
+            item.draw(pygame, self.screen)
 
     def generateRandItems(self):
         traps_count = 0
@@ -112,52 +111,41 @@ class Party:
 
         for i in range(food_count):
             size = 20
-            food_position = self.getRandPosition(size)
+            food_position = self.getRandPosition(size, self.foods + self.traps)
             food = Food("yellow", size, food_position)
             self.foods.append(food)
 
         for i in range(traps_count):
             size = random.randint(40, 150)
-            trap_position = self.getRandPosition(size)
+            trap_position = self.getRandPosition(size, self.foods + self.traps)
             trap = Trap("blue", size, trap_position)
             self.traps.append(trap)
 
-    def getRandPosition(self, size):
+    def getRandPosition(self, size, existing_positions):
         ray_exclusion = 20
         while True:
             position = pygame.Vector2(self.getRandX(size), self.getRandY(size))
             collision = False
 
-            # Verif les collisions avec les autres pièges
-            for trap in self.traps:
-                if trap.position.distance_to(position) < (trap.size + size) / 2:
+            # Vérifie les collisions avec les positions existantes
+            for existing_position in existing_positions:
+                if existing_position.position.distance_to(position) < (existing_position.size + size) / 2:
                     collision = True
                     break
 
-            # Verif les collisions avec les autres nourritures
-            for food in self.foods:
-                if food.position.distance_to(position) < (food.size + size) / 2:
+            # Verifie les collisions avec les zones d'exclusion autour des objets
+            for existing_position in existing_positions:
+                if existing_position.position.distance_to(position) < (
+                        existing_position.size + size) / 2 + ray_exclusion:
                     collision = True
                     break
 
-            # Verif les collisions avec les zones d'exclusion autour des pièges
-            for trap in self.traps:
-                if trap.position.distance_to(position) < (trap.size + size) / 2 + ray_exclusion:
-                    collision = True
-                    break
-
-            # Verif les collisions avec les zones d'exclusion autour des nourritures
-            for food in self.foods:
-                if food.position.distance_to(position) < (food.size + size) / 2 + ray_exclusion:
-                    collision = True
-                    break
             if not collision:
                 return position
-    def sortItemsBySize(self):
-        sorted_items = []
 
     def getRandX(self, size):
-        return random.randint(size + 10, self.screen.get_width())
+        return random.randint(size // 1.6, self.screen.get_width() - size // 1.6)
 
     def getRandY(self, size):
-        return random.randint(size + 10, self.screen.get_height())
+        return random.randint(size // 1.6, self.screen.get_height() - size // 1.6)
+
