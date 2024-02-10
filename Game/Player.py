@@ -1,6 +1,5 @@
 class Player:
-    def __init__(self, name, color, score, size, position,  speed):
-        self.name = name
+    def __init__(self, color, score, size, position,  speed):
         self.color = color
         self.score = score
         self.size = size

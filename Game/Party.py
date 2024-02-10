@@ -23,7 +23,6 @@ class Party:
         pygame.time.set_timer(self.timer_event, 1000)
 
         self.player = Player(
-            "mazbaz",
             "#E8A87C",
             0,
             40,
@@ -60,7 +59,7 @@ class Party:
 
             pygame.display.flip()
 
-            self.dt = self.clock.tick(60) / 1000
+            self.dt = self.clock.tick(140) / 1000
 
             if self.timer <= 0:
                 self.running = False
