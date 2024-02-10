@@ -1,6 +1,5 @@
 import Objects.Party
 from Enums.Devices import Device
 
-
-party = Objects.Party.Party(Device=Device.MOUSE)
+party = Objects.Party.Party(2, Device.MOUSE)
 party.start()
