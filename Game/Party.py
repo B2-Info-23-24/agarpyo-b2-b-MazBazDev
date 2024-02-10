@@ -56,7 +56,7 @@ class Party:
 
             self.check_collision_with_traps()
 
-            self.drawTimer()
+            self.drawUi()
 
             pygame.display.flip()
 
@@ -68,6 +68,8 @@ class Party:
         pygame.quit()
 
     def onInput(self):
+        keys = pygame.key.get_pressed()
+
         if self.Device == Device.MOUSE:
             mouse_pos = pygame.mouse.get_pos()
             direction = pygame.Vector2(mouse_pos[0] - self.player.position.x, mouse_pos[1] - self.player.position.y)
@@ -79,7 +81,6 @@ class Party:
             self.player.position += displacement
 
         elif self.Device == Device.KEYBOARD:
-            keys = pygame.key.get_pressed()
             # up
             if keys[pygame.K_z]:
                 self.player.position.y -= self.player.speed * self.dt
@@ -92,6 +93,9 @@ class Party:
             # right
             if keys[pygame.K_d]:
                 self.player.position.x += self.player.speed * self.dt
+
+        if keys[pygame.K_ESCAPE]:
+            self.running = False
 
     def onBorder(self):
 
@@ -191,8 +195,10 @@ class Party:
     def getRandY(self, size):
         return random.randint(size // 1.6, self.screen.get_height() - size // 1.6)
 
-    def drawTimer(self):
+    def drawUi(self):
         self.printText("Timer: {}".format(self.timer), (255, 255, 255), (10, 10))
+        self.printText("Speed: {}".format(self.player.speed), (255, 255, 255), (10, 40))
+        self.printText("Dificulty: {}".format(self.level), (255, 255, 255), (10, 70))
 
     def printText(self, text, color, position):
         text_surface = self.font.render(text, True, color)
