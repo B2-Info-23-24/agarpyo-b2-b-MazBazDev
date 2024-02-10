@@ -24,7 +24,7 @@ class Party:
 
         self.player = Player(
             "mazbaz",
-            "red",
+            "#E8A87C",
             0,
             40,
             pygame.Vector2(self.screen.get_width() / 2, self.screen.get_height() / 2),
@@ -44,7 +44,7 @@ class Party:
                 elif event.type == self.timer_event:
                     self.timer -= 1
 
-            self.screen.fill("purple")
+            self.screen.fill("#7CC1AC")
 
             self.drawItems()
 
@@ -139,14 +139,14 @@ class Party:
         for i in range(count):
             size = 20
             food_position = self.getRandPosition(size, self.foods + self.traps)
-            food = Food("yellow", size, food_position)
+            food = Food("#C38D9E", size, food_position)
             self.foods.append(food)
 
     def generateXTrap(self, count):
         for i in range(count):
             size = random.randint(40, 150)
             trap_position = self.getRandPosition(size, self.foods + self.traps)
-            trap = Trap("blue", size, trap_position)
+            trap = Trap("#FF686B", size, trap_position)
             self.traps.append(trap)
 
     def getRandPosition(self, size, existing_positions):

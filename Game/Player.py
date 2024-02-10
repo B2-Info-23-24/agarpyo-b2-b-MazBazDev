@@ -14,9 +14,9 @@ class Player:
         self.score += score
 
     def addSpeed(self, speed):
-        if self.speed + speed < 500:
+        if self.speed + speed <= 500:
             self.speed += speed
 
     def addSize(self, size):
-        if self.size + size < 200:
+        if self.size + size <= 200:
             self.size += size
