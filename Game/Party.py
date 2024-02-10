@@ -1,9 +1,9 @@
 import pygame
 import random
 
-from Objects.Player import Player
-from Objects.Trap import Trap
-from Objects.Food import Food
+from Game.Player import Player
+from Game.Trap import Trap
+from Game.Food import Food
 from Enums.Devices import Device
 
 
@@ -48,6 +48,10 @@ class Party:
             self.onInput()
 
             self.onBorder()
+
+            self.check_collision_with_foods()
+
+            self.check_collision_with_traps()
 
             pygame.display.flip()
 
@@ -109,13 +113,19 @@ class Party:
         elif self.level == 4:
             traps_count, food_count = 4, 2
 
-        for i in range(food_count):
+        self.generateXFood(food_count)
+
+        self.generateXTrap(traps_count)
+
+    def generateXFood(self, count):
+        for i in range(count):
             size = 20
             food_position = self.getRandPosition(size, self.foods + self.traps)
             food = Food("yellow", size, food_position)
             self.foods.append(food)
 
-        for i in range(traps_count):
+    def generateXTrap(self, count):
+        for i in range(count):
             size = random.randint(40, 150)
             trap_position = self.getRandPosition(size, self.foods + self.traps)
             trap = Trap("blue", size, trap_position)
@@ -129,19 +139,37 @@ class Party:
 
             # Vérifie les collisions avec les positions existantes
             for existing_position in existing_positions:
-                if existing_position.position.distance_to(position) < (existing_position.size + size) / 2:
+                if existing_position.position.distance_to(position) < (existing_position.size + size) / 2 + ray_exclusion:
                     collision = True
                     break
 
             # Verifie les collisions avec les zones d'exclusion autour des objets
             for existing_position in existing_positions:
-                if existing_position.position.distance_to(position) < (
-                        existing_position.size + size) / 2 + ray_exclusion:
+                if existing_position.position.distance_to(position) < ((existing_position.size + size) / 2 + ray_exclusion):
                     collision = True
                     break
 
             if not collision:
                 return position
+
+    def check_collision_with_foods(self):
+        for food in self.foods:
+            if self.player.position.distance_to(food.position) < self.player.size + food.size:
+
+                self.player.addScore(1)
+                self.player.addSpeed(100)
+                self.player.addSize(2)
+
+                self.foods.remove(food)
+                self.generateXFood(1)
+
+    def check_collision_with_traps(self):
+        for trap in self.traps:
+            if self.player.position.distance_to(trap.position) < (self.player.size + trap.size) and self.player.size > trap.size:
+                self.player.size /= self.level
+
+                self.traps.remove(trap)
+                self.generateXTrap(1)
 
     def getRandX(self, size):
         return random.randint(size // 1.6, self.screen.get_width() - size // 1.6)
