@@ -1,25 +1,26 @@
 import pygame
 import random
-
 from Game.Player import Player
 from Game.Trap import Trap
 from Game.Food import Food
 from Enums.Devices import Device
 
-
 class Party:
-    def __init__(self, level, device):
+    def __init__(self, level, device, timer):
         pygame.init()
 
         self.screen = pygame.display.set_mode((1280, 720))
         self.clock = pygame.time.Clock()
-
         self.running = True
-
         self.dt = 0
-
         self.level = level
         self.Device = device
+
+        self.timer = timer
+        self.font = pygame.font.SysFont(None, 36)
+
+        self.timer_event = pygame.USEREVENT + 1
+        pygame.time.set_timer(self.timer_event, 1000)
 
         self.player = Player(
             "mazbaz",
@@ -40,6 +41,8 @@ class Party:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
+                elif event.type == self.timer_event:
+                    self.timer -= 1
 
             self.screen.fill("purple")
 
@@ -53,9 +56,15 @@ class Party:
 
             self.check_collision_with_traps()
 
+            self.drawTimer()
+
             pygame.display.flip()
 
             self.dt = self.clock.tick(60) / 1000
+
+            if self.timer <= 0:
+                self.running = False
+
         pygame.quit()
 
     def onInput(self):
@@ -101,6 +110,11 @@ class Party:
 
         for item in sorted_items:
             item.draw(pygame, self.screen)
+
+            if item is self.player:
+                text_width, text_height = self.font.size(format(self.player.score))
+                text_position = (self.player.position.x - text_width / 2, self.player.position.y - text_height / 2)
+                self.printText(format(self.player.score), (255, 255, 255), text_position)
 
     def generateRandItems(self):
         traps_count = 0
@@ -177,3 +191,10 @@ class Party:
     def getRandY(self, size):
         return random.randint(size // 1.6, self.screen.get_height() - size // 1.6)
 
+    def drawTimer(self):
+        self.printText("Timer: {}".format(self.timer), (255, 255, 255), (10, 10))
+
+    def printText(self, text, color, position):
+        text_surface = self.font.render(text, True, color)
+        text_rect = text_surface.get_rect(topleft=position)
+        self.screen.blit(text_surface, text_rect)
