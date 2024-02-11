@@ -175,7 +175,7 @@ class Party:
             if self.player.position.distance_to(food.position) < self.player.size + food.size:
 
                 self.player.addScore(1)
-                self.player.addSpeed(100)
+                self.player.addSpeed(5)
                 self.player.addSize(2)
 
                 self.foods.remove(food)
@@ -198,7 +198,7 @@ class Party:
     def drawUi(self):
         self.printText("Timer: {}".format(self.timer), (255, 255, 255), (10, 10))
         self.printText("Difficulty: {}".format(self.level), (255, 255, 255), (10, 40))
-        self.printText("Speed: {}".format(self.player.speed//100), (255, 255, 255), (10, 70))
+        self.printText("Speed: {}".format(self.player.speed), (255, 255, 255), (10, 70))
         self.printText("Size: {}".format(self.player.size), (255, 255, 255), (10, 100))
 
     def printText(self, text, color, position):
