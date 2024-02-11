@@ -24,14 +24,19 @@ class Game:
 
         self.selected_level = 2
 
-
     def display_menu(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return -1
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_q:
+                    return -1
+                elif event.key == pygame.K_p:
+                    # Si la touche 'p' est pressée, initialiser en mode clavier
+                    self.initParty(self.selected_level, Device.KEYBOARD)
+                    return 1
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if self.play_keyboard_rect.collidepoint(event.pos):
-                    print("helllo")
                     self.initParty(self.selected_level, Device.KEYBOARD)
                     return 1
                 elif self.play_mouse_rect.collidepoint(event.pos):
@@ -64,19 +69,19 @@ class Game:
         self.screen.blit(quit_text, (100 + mr, 200 + mt))
         self.quit_rect = quit_text.get_rect(topleft=(100 + mr, 200 + mt))
 
-        level2_text = self.font.render("Level 2", True, (255, 255, 255))
+        level2_text = self.font.render("Level 2 (Easy)", True, (255, 255, 255))
         self.screen.blit(level2_text, (500 + mr, 100 + mt))
         self.level2_rect = level2_text.get_rect(topleft=(500 + mr, 100 + mt))
         if self.selected_level == 2:
             pygame.draw.circle(self.screen, "#FF686B", (480 + mr, 112 + mt), 8)
 
-        level3_text = self.font.render("Level 3", True, (255, 255, 255))
+        level3_text = self.font.render("Level 3 (Normal)", True, (255, 255, 255))
         self.screen.blit(level3_text, (500 + mr, 150 + mt))
         self.level3_rect = level3_text.get_rect(topleft=(500 + mr, 150 + mt))
         if self.selected_level == 3:
             pygame.draw.circle(self.screen, "#FF686B", (480 + mr, 162 + mt), 8)
 
-        level4_text = self.font.render("Level 4", True, (255, 255, 255))
+        level4_text = self.font.render("Level 4 (Hard)", True, (255, 255, 255))
         self.screen.blit(level4_text, (500 + mr, 200 + mt))
         self.level4_rect = level4_text.get_rect(topleft=(500 + mr, 200 + mt))
         if self.selected_level == 4:

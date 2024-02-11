@@ -185,6 +185,7 @@ class Party:
         for trap in self.traps:
             if self.player.position.distance_to(trap.position) < (self.player.size + trap.size) and self.player.size > trap.size:
                 self.player.size /= self.level
+                self.player.speed /= self.level
 
                 self.traps.remove(trap)
                 self.generateXTrap(1)
