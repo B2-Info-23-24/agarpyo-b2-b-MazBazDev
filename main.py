@@ -32,7 +32,6 @@ class Game:
                 if event.key == pygame.K_q:
                     return -1
                 elif event.key == pygame.K_p:
-                    # Si la touche 'p' est pressée, initialiser en mode clavier
                     self.initParty(self.selected_level, Device.KEYBOARD)
                     return 1
             elif event.type == pygame.MOUSEBUTTONDOWN:
