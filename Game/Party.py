@@ -35,36 +35,34 @@ class Party:
 
         self.generateRandItems()
 
-    def start(self):
-        while self.running:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    self.running = False
-                elif event.type == self.timer_event:
-                    self.timer -= 1
-
-            self.screen.fill("#7CC1AC")
-
-            self.drawItems()
-
-            self.onInput()
-
-            self.onBorder()
-
-            self.check_collision_with_foods()
-
-            self.check_collision_with_traps()
-
-            self.drawUi()
-
-            pygame.display.flip()
-
-            self.dt = self.clock.tick(140) / 1000
-
-            if self.timer <= 0:
+    def play(self, tick):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
                 self.running = False
+            elif event.type == self.timer_event:
+                self.timer -= 1
 
-        pygame.quit()
+
+        self.screen.fill("#7CC1AC")
+
+        self.drawItems()
+
+        self.onInput()
+
+        self.onBorder()
+
+        self.check_collision_with_foods()
+
+        self.check_collision_with_traps()
+
+        self.drawUi()
+
+        self.dt = tick / 1000
+
+        if self.timer <= 0:
+            self.running = False
+
+        return [self.running, self.player]
 
     def onInput(self):
         keys = pygame.key.get_pressed()
@@ -72,6 +70,9 @@ class Party:
         if self.Device == Device.MOUSE:
             mouse_pos = pygame.mouse.get_pos()
             direction = pygame.Vector2(mouse_pos[0] - self.player.position.x, mouse_pos[1] - self.player.position.y)
+
+            direction.x = round(direction.x)
+            direction.y = round(direction.y)
 
             if direction.length() > 0:
                 direction.normalize_ip()
@@ -196,8 +197,9 @@ class Party:
 
     def drawUi(self):
         self.printText("Timer: {}".format(self.timer), (255, 255, 255), (10, 10))
-        self.printText("Speed: {}".format(self.player.speed), (255, 255, 255), (10, 40))
-        self.printText("Dificulty: {}".format(self.level), (255, 255, 255), (10, 70))
+        self.printText("Difficulty: {}".format(self.level), (255, 255, 255), (10, 40))
+        self.printText("Speed: {}".format(self.player.speed//100), (255, 255, 255), (10, 70))
+        self.printText("Size: {}".format(self.player.size), (255, 255, 255), (10, 100))
 
     def printText(self, text, color, position):
         text_surface = self.font.render(text, True, color)
