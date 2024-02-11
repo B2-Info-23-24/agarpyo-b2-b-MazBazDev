@@ -17,7 +17,6 @@ class Game:
         self.play_mouse_rect = pygame.Rect(0, 0, 0, 0)
         self.quit_rect = pygame.Rect(0, 0, 0, 0)
         self.back_to_menu_rect = pygame.Rect(0, 0, 0, 0)
-        self.score_rect = pygame.Rect(0, 0, 0, 0)
 
         self.level2_rect = pygame.Rect(0, 0, 0, 0)
         self.level3_rect = pygame.Rect(0, 0, 0, 0)
@@ -92,14 +91,18 @@ class Game:
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if self.back_to_menu_rect.collidepoint(event.pos):
                     return 0
+        mt = 150
+        mr = 470
 
-        score_text = self.font.render(f"Party ended with score = {self.party.player.score}", True, (255, 255, 255))
-        self.screen.blit(score_text, (100, 100))
-        self.score_rect = score_text.get_rect(topleft=(100, 100))
+        score_title = self.font.render(f"Party ended !", True, (255, 255, 255))
+        self.screen.blit(score_title, (100 + mr, 100 + mt))
+
+        score_text = self.font.render(f"Score : {self.party.player.score}", True, (255, 255, 255))
+        self.screen.blit(score_text, (100 + mr, 150 + mt))
 
         back_to_menu_text = self.font.render(f"-> Back to menu", True, (255, 255, 255))
-        self.screen.blit(back_to_menu_text, (100, 150))
-        self.back_to_menu_rect = back_to_menu_text.get_rect(topleft=(100, 150))
+        self.screen.blit(back_to_menu_text, (80 + mr, 230 + mt))
+        self.back_to_menu_rect = back_to_menu_text.get_rect(topleft=(80 + mr, 230 + mt))
 
         return 2
 
