@@ -19,34 +19,72 @@ class Game:
         self.back_to_menu_rect = pygame.Rect(0, 0, 0, 0)
         self.score_rect = pygame.Rect(0, 0, 0, 0)
 
+        self.level2_rect = pygame.Rect(0, 0, 0, 0)
+        self.level3_rect = pygame.Rect(0, 0, 0, 0)
+        self.level4_rect = pygame.Rect(0, 0, 0, 0)
+
+        self.selected_level = 2
+
+
     def display_menu(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return -1
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if self.play_keyboard_rect.collidepoint(event.pos):
-                    self.initParty(2, Device.KEYBOARD)
+                    print("helllo")
+                    self.initParty(self.selected_level, Device.KEYBOARD)
                     return 1
                 elif self.play_mouse_rect.collidepoint(event.pos):
-                    self.initParty(2, Device.MOUSE)
-
+                    self.initParty(self.selected_level, Device.MOUSE)
                     return 1
+                elif self.level2_rect.collidepoint(event.pos):
+                    self.selected_level = 2
+                elif self.level3_rect.collidepoint(event.pos):
+                    self.selected_level = 3
+                elif self.level4_rect.collidepoint(event.pos):
+                    self.selected_level = 4
                 elif self.quit_rect.collidepoint(event.pos):
                     return -1
 
+        mt = 180
+        mr = 280
+
+        title_text = self.font.render("MazBazPyo", True, (255, 255, 255))
+        self.screen.blit(title_text, (330 + mr, 50 + mt))
+
         play_keyboard_text = self.font.render("-> Play with Keyboard", True, (255, 255, 255))
-        self.screen.blit(play_keyboard_text, (100, 100))
-        self.play_keyboard_rect = play_keyboard_text.get_rect(topleft=(100, 100))
+        self.screen.blit(play_keyboard_text, (100 + mr, 100 + mt))
+        self.play_keyboard_rect = play_keyboard_text.get_rect(topleft=(100 + mr, 100 + mt))
 
         play_mouse_text = self.font.render("-> Play with Mouse", True, (255, 255, 255))
-        self.screen.blit(play_mouse_text, (100, 150))
-        self.play_mouse_rect = play_mouse_text.get_rect(topleft=(100, 150))
+        self.screen.blit(play_mouse_text, (100 + mr, 150 + mt))
+        self.play_mouse_rect = play_mouse_text.get_rect(topleft=(100 + mr, 150 + mt))
 
         quit_text = self.font.render("-> Quit", True, (255, 255, 255))
-        self.screen.blit(quit_text, (100, 200))
-        self.quit_rect = quit_text.get_rect(topleft=(100, 200))
+        self.screen.blit(quit_text, (100 + mr, 200 + mt))
+        self.quit_rect = quit_text.get_rect(topleft=(100 + mr, 200 + mt))
+
+        level2_text = self.font.render("Level 2", True, (255, 255, 255))
+        self.screen.blit(level2_text, (500 + mr, 100 + mt))
+        self.level2_rect = level2_text.get_rect(topleft=(500 + mr, 100 + mt))
+        if self.selected_level == 2:
+            pygame.draw.circle(self.screen, "#FF686B", (480 + mr, 112 + mt), 8)
+
+        level3_text = self.font.render("Level 3", True, (255, 255, 255))
+        self.screen.blit(level3_text, (500 + mr, 150 + mt))
+        self.level3_rect = level3_text.get_rect(topleft=(500 + mr, 150 + mt))
+        if self.selected_level == 3:
+            pygame.draw.circle(self.screen, "#FF686B", (480 + mr, 162 + mt), 8)
+
+        level4_text = self.font.render("Level 4", True, (255, 255, 255))
+        self.screen.blit(level4_text, (500 + mr, 200 + mt))
+        self.level4_rect = level4_text.get_rect(topleft=(500 + mr, 200 + mt))
+        if self.selected_level == 4:
+            pygame.draw.circle(self.screen, "#FF686B",(480 + mr, 212 + mt), 8)
 
         return 0
+
     def display_end_page(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -64,8 +102,9 @@ class Game:
         self.back_to_menu_rect = back_to_menu_text.get_rect(topleft=(100, 150))
 
         return 2
+
     def initParty(self, level, device):
-        if  self.party == None or self.party.running == False:
+        if  self.party is None or self.party.running is False:
             self.party = Party(level, device, 60)
 
     def main(self):
@@ -75,12 +114,11 @@ class Game:
             self.screen.fill("#7CC1AC")
 
             if self.current_page == 0:
-                self.current_page =  self.display_menu()
+                self.current_page = self.display_menu()
             elif self.current_page == 1:
                 party_running, party_player = self.party.play(tick)
 
                 if not party_running:
-                    print("Go to end")
                     self.current_page = 2
 
             elif self.current_page == 2:
@@ -92,6 +130,7 @@ class Game:
             pygame.display.flip()
 
         pygame.quit()
+
 
 if __name__ == "__main__":
     game = Game()
